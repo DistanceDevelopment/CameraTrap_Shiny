@@ -43,17 +43,39 @@ ui <- fluidPage(
   tabsetPanel(type = "tabs",
               tabPanel("Introduction",
                        h4("Introduction"),
-                       p("This app provides an interface to calculate the activity multiplier for camera trap distance sampling analyses in Distance for Windows. Please follow the steps below to find the activity multiplier, associated standard error and if required boostrap resamples."),
+                       p("This app allows you to calculate the activity multiplier for camera trap distance sampling analyses in Distance for Windows. It is an interface to the 'activity' package (Rowcliffe 2023) in R. The underlying methods are described by Rowcliffe et al. (2014)."),
+                       p("Please follow the steps below to find the activity multiplier, associated standard error and, if required, boostrap resamples."),
                        h4("Data Requirements"),
-                       p("The data used in this shiny app should constitute independent videos of animal activity. This means that if the recorder was triggered multiple times during a single animal visit, then only one of these should be included in the dataset. Note it is possible to include all the videos in the dataset imported into Distance for Windows."), 
+                       p("The input data should be a text file with one row per independent detection of the target species and a column containing the time of the detection.  Other columns are allowed, but will be ignored.  Various time and date-time formats are supported (see the 'Analysis' tab for details).  The text file suffix can be either '.txt' (if columns are separated by a space or tab) or '.csv' (if columns are separated by a comma)."),
+                       p("Each row of the input file should represent an independent detection.  This means that if if the recorder was triggered multiple times during a single animal visit, then only one record (e.g., the first for that visit) should be included in the dataset."), 
                        h4("App Instructions"),
                        HTML(
                          "<ol>
-                           <li><b>Upload your data:</b> Navigate to the 'Data' tab and click on the 'Browse' button. Find your data file and click 'Open'. You should now see a summary of your dataset. You may also choose to view the first few rows by selecting the 'Head' radio button on the left. You may either upload a tab delimited text file (.txt) or a comma delimited file (.csv) containing your data. Your dataset should contain a column with activity times or date times, please see the options on the 'Analysis' tab for suitable formats.</li>
-                           <li><b>Fit an activity model:</b> to fit the activity model navigate to the 'Analysis' tab. First, you will need to specify the column in your data set which contains the time or date-time information. The first dropdown menu will have automatically been populated with a list of the column names from your dataset, please select the appropriate column. Next you will need to specify the format of the this column, please select from the available options in the second dropdown menu. You now have the option to specify a bandwith and the number of bootstrap replicate you require. It is sensible to start with only a few as it can take some time to run. Once you have entered these values click on the 'Run Fit Activity' button. On the lower right hand corner of your page you will see a progress counter. Once it completes you will be able to view summary statistics and the fitted model. If you update any of the values you will need to press the 'Run Fit Activity' button again. Please do this before proceeing to the final 'Activity and Bootstrap Values' tab.</li>
-                           <li><b>Obtain values for Distance for Windows:</b> You now need to navigate to the 'Activity and Bootstrap Values' tab. To obtain the values required for your distance sampling analysis you will need to supply the average number of hours in any 24 hour period that the cameras were operational and recording. When you fill in this value you will be supplied with the proportion of the day which this constitutes and the activity multiplier, associated standard error and bootstrap values will all be updated accordingly. You may now record the activity multiplier value and standard error for input into the global layer of your Distance project and additionally download the bootstrap resamples for import into your multipler bootstrap layer. The bootstrap resamples will be downloaded as a single column in a tab delimited .txt file. Note that if you require to import more than one column into the boostrap multiplier layer in your Distance project, for example for multiple species, then you will need to first combine these single columns in advance of importing your data.</li>
+                           <li><b>Upload your data:</b> Click on the 'Data' tab and click on the 'Browse' button. Find your data file and click 'Open'. You should now see a summary of your dataset. You may also choose to view the first few rows by selecting the 'Head' radio button on the left.</li>
+                           <li><b>Fit an activity model:</b> To fit the activity model click the 'Analysis' tab.
+                             <ul>
+                               <li>Specify which column in your data set contains the time or date-time information. The first drop-down menu will have automatically been populated with a list of the column names from your dataset; please select the appropriate column.</li>
+                               <li>Specify the format of the this column. Please select from the available options in the second dropdown menu.</li>
+                               <li>You now have the option to specify a bandwith - please see Rowcliffe et al. (2014) for details.</li>
+                               <li>Specify the number of bootstrap replicates you require. It is sensible to start with only a few as the analysis can take some time to run.</li>
+                               <li>Click the 'Run Fit Activity' button. On the lower right hand corner of your page you will see a progress counter. Once it completes you will be able to view summary statistics and the fitted model.</li>
+                               <li>If you update any of the values you will need to press the 'Run Fit Activity' button again. In particular, if you specified a small numbe rof bootstrap replicates you should now increase this number and press 'Run Fit Activity' again.  Please do this before proceeing to the final 'Activity and Bootstrap Values' tab.</li>
+                             </ul></li>
+                           <li><b>Obtain values for Distance for Windows:</b> You should click the 'Activity and Bootstrap Values' tab.
+                             <ul>
+                               <li>To obtain the values required for your distance sampling analysis you should to supply the average number of hours in any 24 hour period that the cameras were operational and recording.</li>
+                               <li>When you fill in this value you will be supplied with the proportion of the day that this constitutes, and the activity multiplier, associated standard error and bootstrap values will all be updated accordingly.</li>
+                               <li>You may now record the activity multiplier value and standard error for input into the global layer of your Distance project, and additionally download the bootstrap resamples for import into your multipler bootstrap layer.</li?
+                               <li>The bootstrap resamples will be downloaded as a single column in a tab delimited '.txt' file. Note that if you require to import more than one column into the boostrap multiplier layer in your Distance project, for example for multiple species, then you will need to first combine these single columns in advance of importing your data.</li>
+                            </ul></li>
                          </ol>"
-                       )
+                       ),
+                       h4("References"),
+                       HTML("<ul>
+                              <li>Rowcliffe, M. (2023) activity: Animal Activity Statistics. R package version 1.3.4.</li>
+                              <li>Rowcliffe, M., Kays, R., Kranstauber, B., Carbone, C., Jansen, P.A. (2014) Quantifying animal activity level using camera trap data. Methods in Ecology and Evolution 5: 1170-1179. doi:10.1111/2041-210X.12278</li>
+                            </ul>"),
+                       p()
               ),
               tabPanel("Data",
                        fileInput("file",
@@ -83,10 +105,10 @@ ui <- fluidPage(
                        
               ),
               tabPanel("Analysis", 
-                       p("Please specify the column in your data containing the time or date-time information and then select the appropriate format describing this column. Note that times must be in 24 hours clock format, i.e. 13:45 rather than 1:45 PM."),
+                       p("Please specify the column in your data containing the time or date-time information and then select the appropriate format describing this column. Note that times must be in 24 hour clock format, i.e., 13:45 rather than 1:45 PM."),
                        selectInput("time.of.day", "Time of day variable name:",
                                    c("Please select data in data tab" = "none")),
-                       p("The following formats refer to the values specified as follows: HH - hours, MM - minutes, SS - seconds, dd - day, mm - month, yyyy - year. Note that the number of letters refers to the maximum number of values which should be provided, it is possible to specify in shorter format. For example dd/mm/yyyy HH:MM will accept both 01/12/2020 06:45 and 1/12/20 6:45."),
+                       p("The following formats refer to the values specified as follows: HH - hours, MM - minutes, SS - seconds, dd - day, mm - month, yyyy - year. Note that the number of letters refers to the maximum number of values that should be provided; it is possible to specify in shorter format. For example dd/mm/yyyy HH:MM will accept both 01/12/2020 06:45 and 1/12/20 6:45."),
                        selectInput("time.format", "Date time format",
                                    c("HH:MM" = "%H:%M",
                                      "HH:MM:SS" = "%H:%M:%S",
@@ -106,23 +128,25 @@ ui <- fluidPage(
                                      "dd/mm/yyyy HH.MM" = "%d/%m/%Y %H.%M")),
                        p("The bandwidth adjustment multiplier is provided to allow exploration of the effect of adjusting the internally calculated bandwidth on accuracy of activity level estimates."),
                        textInput("adj", "Bandwith:", 1),
-                       p("The distribution of the triggering events times will now be smoothed, using a kernel smoother. In order to estimate uncertainty in the point estimate of activity proportion, the data will be resampled. Please provide the number of replicates and press 'Run Fit Activity'"),
+                       p("Please specify the number of bootstrap replicates for estimating uncertainty."),
                        textInput("reps", "Replicates:", 1),
+                       p("Once the above inputs are complete, click the 'Run Fit Activity' button to estimate activity and uncertainty on activity"),
                        actionButton("run", "Run Fit Activity"),
                        h4("Unscaled results"),
-                       p("The results below are based on cameras which operate for the entire 24 hours in any given day. When you have finalised your analysis, please proceed to the final tab to scale these values according to hours spent recording. Note, if you update the input values above you should press the 'Run Fit Activity' button again before proceeding."),
+                       p("The results below are based on cameras that operate for the entire 24 hours in any given day. When you have finalised your analysis, please proceed to the `final`Activity and Bootstrap Values' tab to scale these values according to hours per day spent recording."),
+                       p("Note: if you update the input values above you should click the 'Run Fit Activity' button again before proceeding."),
                        verbatimTextOutput("resultsParam"),
                        verbatimTextOutput("results"),
                        plotOutput("hist")
                        ),
               tabPanel("Activity and Bootstrap Values",
-                       p("We need to perform an adjustment to obtain the activity multipliers we need to include in our distance sampling analyses. We will now scale the activity values in proportion to the number of hours the camera was operating out of a 24 hour period. Please supply the average number of hours for which the camera was recording in a 24 hour interval."),
+                       p("If the input data come from recorders that were operating for fewer than 24 hours per day, please enter the mean number of hours per day below."),
                        fluidRow(
-                         column(3, "Operational camera hours out of 24 hours: "),
+                         column(3, "Mean operational recorder hours per day: "),
                          column(3,textInput("op.hours", "", value = 24, width = '50%'))
                        ),
                        br(),
-                       "Proportion of day cameras were recording:",
+                       "Proportion of day recorders were recording:",
                        textOutput("prop.op.hours", inline = TRUE),
                        linebreaks(2),
                        h4("Scaled activity rate and SE"),
@@ -133,10 +157,8 @@ ui <- fluidPage(
                        "Activity rate standard error (SE):",
                        textOutput("activity.rate.se", inline = TRUE),
                        linebreaks(2),
-                       #actionButton("boot.gen", "Generate Bootstrap Replicates"),
-                       
                        h4("Scaled bootstrap replicates summary"),
-                       p("These are the scaled values ready for import into Distance for Windows. These values can be downloaded, using the button below, to a tab delimited .txt file and imported into the appropriate column of your multiplier bootstrap values layer (default name - 'Multipliers Bootstrap') in your Distance project."),
+                       p("These are the scaled values ready for import into Distance for Windows. The values can be downloaded, using the button below, to a tab delimited '.txt' file.  This file can then be imported into the appropriate column of your multiplier bootstrap values layer (default name - 'Multipliers Bootstrap') in your Distance project."),
                        verbatimTextOutput("boot.mult"),
                        downloadButton("boot_mults", "Download Bootstrap Replicates"),
                        linebreaks(2)
@@ -223,8 +245,10 @@ server <- function(input, output, session){
   rtime <- eventReactive(input$run, {
     check <- class(column()) == "character"
     req(check)
-    tmp <- try(gettime(column(), input$time.format), silent = TRUE)
+    tmp <- try(gettime(column(), scale = "radian", input$time.format), silent = TRUE)
     if(class(tmp) == "try-error"){
+      validate(paste("An error occured when converting date-time column into dates.  Please check your date-time column,",
+        "and if you do not find a problem please contact the app authors.  The error returned by the app was:\n", tmp))
       return(NULL)
     }else if(all(is.na(tmp))){
       validate(need(!all(is.na(tmp)), "Please check your date-time column selection and selected format. There has been a problem in the calculations."))

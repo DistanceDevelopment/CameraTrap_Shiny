@@ -1,0 +1,12 @@
+name: CameraTrap_Shiny
+title: CameraTrap_Shiny
+username: lenthomas
+account: lenthomas
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 13461574
+bundleId: 9422947
+url: https://lenthomas.shinyapps.io/CameraTrap_Shiny/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
