@@ -1,5 +1,6 @@
 library(activity)
 library(shiny)
+library(DT)
 library(dplyr, warn.conflicts = FALSE)
 
 linebreaks <- function(n){HTML(strrep(br(), n))}
@@ -98,7 +99,7 @@ ui <- fluidPage(
                            ),
                            conditionalPanel(
                              condition = "input.display == 'full'",
-                             dataTableOutput("data.full")
+                             DT::DTOutput("data.full")
                            )
                          )
                        )
@@ -245,7 +246,7 @@ server <- function(input, output, session){
   rtime <- eventReactive(input$run, {
     check <- class(column()) == "character"
     req(check)
-    tmp <- try(gettime(column(), scale = "radian", input$time.format), silent = TRUE)
+    tmp <- try(gettime(column(), scale = "radian", input$time.format, tz = "UTC"), silent = TRUE)
     if(class(tmp) == "try-error"){
       validate(paste("An error occured when converting date-time column into dates.  Please check your date-time column,",
         "and if you do not find a problem please contact the app authors.  The error returned by the app was:\n", tmp))
